@@ -1,70 +1,185 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 📝 My Note — Sistema de Gerenciamento de Notas Pessoais (SGCPD)
 
-## Available Scripts
+Aplicação web desenvolvida em **React.js** (Create React App) integrada ao **Supabase**, permitindo o gerenciamento completo de notas pessoais com autenticação, categorização por prioridade e interface responsiva.  
 
-In the project directory, you can run:
+O projeto foi desenvolvido como parte do **Projeto Final — Desenvolvimento Front-End**.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🚀 Funcionalidades Principais
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+| Categoria          | Funcionalidade                                | Status |
+|-------------------|-----------------------------------------------|--------|
+| 👤 Usuários        | Login e cadastro via Supabase Auth            | ✅     |
+| 📄 Notas           | Criar, visualizar, editar e excluir notas (CRUD completo) | ✅ |
+| 🏷️ Organização     | Filtragem por prioridade                      | ✅     |
+| 🔐 Segurança       | Confirmação antes de deletar notas           | ✅     |
+| 💾 Persistência    | Integração total com Supabase Database       | ✅     |
+| 📱 Responsividade  | Layout adaptável para desktop e mobile       | ✅     |
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🧠 Tecnologias Utilizadas
 
-### `npm run build`
+- **React.js (Create React App)** — Front-end SPA  
+- **Supabase** — Autenticação e banco de dados PostgreSQL  
+- **JavaScript (ES6+)** — Lógica e manipulação de estado  
+- **React Context API** — Compartilhamento global de estado  
+- **CSS3 / Flexbox / Media Queries** — Layout e design responsivo  
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🏗️ Estrutura do Projeto
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+my-note/
+├── node_modules/
+├── public/
+│   └── index.html
+├── src/
+│   ├── context/
+│   │   └── NotesContext.jsx        # Contexto global das notas
+│   ├── images/                     # Recursos visuais e ícones
+│   ├── pages/
+│   │   ├── Dashboard.jsx           # Painel principal com listagem de notas
+│   │   ├── Login.jsx               # Tela de login (Supabase Auth)
+│   │   ├── NoteEditor.jsx          # Criação e edição de notas
+│   │   ├── Register.jsx            # Cadastro de novo usuário
+│   │   └── UsersScreen.jsx         # Listagem/gestão de usuários (opcional)
+│   ├── App.js                      # Estrutura principal e rotas
+│   ├── App.css                     # Estilos globais
+│   ├── index.js                    # Ponto de entrada da aplicação
+│   ├── index.css                   # Estilos base
+│   ├── supabaseClient.js           # Conexão com Supabase
+│   ├── supabaseAdmin.js            # Operações administrativas
+│   ├── setupTests.js               # Configuração de testes
+│   ├── reportWebVitals.js          # Métricas de performance
+│   └── logo.svg
+├── package.json
+├── package-lock.json
+└── README.md
+```
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## ⚙️ Instalação e Execução
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 1️⃣ Pré-requisitos
+- Node.js (v16 ou superior)  
+- Conta no Supabase  
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 2️⃣ Clonar o repositório
+```bash
+git clone https://github.com/lucas-silva-aa/my-note.git
+cd my-note
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 3️⃣ Instalar dependências
+```bash
+npm install
+```
 
-## Learn More
+### 4️⃣ Criar o arquivo `.env`
+```env
+REACT_APP_SUPABASE_URL=https://<seu-projeto>.supabase.co
+REACT_APP_SUPABASE_ANON_KEY=eyJhbGciOi...
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 5️⃣ Rodar a aplicação
+```bash
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Acesse em: [http://localhost:3000](http://localhost:3000)
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 🗄️ Configuração do Supabase
 
-### Analyzing the Bundle Size
+### 🔧 Tabela `notes`
+Crie a tabela de notas com o SQL abaixo:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```sql
+CREATE TABLE notes (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid REFERENCES auth.users(id),
+  title text NOT NULL,
+  content text,
+  priority text CHECK (priority IN ('Alta', 'Média', 'Baixa')),
+  created_at timestamptz DEFAULT now()
+);
+```
 
-### Making a Progressive Web App
+### 🔐 Autenticação
+Ative o **Supabase Auth** com método de e-mail/senha.  
+Os usuários poderão se cadastrar diretamente pela tela **Register**.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## 💻 Scripts Disponíveis
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+| Comando        | Descrição                                    |
+|----------------|---------------------------------------------|
+| `npm start`    | Executa o projeto em modo de desenvolvimento |
+| `npm run build`| Gera a build de produção                     |
+| `npm test`     | Executa os testes (caso configurados)       |
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 🧪 Testes Sugeridos
+- Validação de login e registro  
+- Criação e deleção de notas  
+- Filtro por prioridade  
+- Renderização condicional de elementos  
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📱 Design e Responsividade
+- Layout **mobile-first**  
+- Ícones e botões grandes e acessíveis  
+- Estrutura fluida (Flexbox e media queries)  
+- Testado em resoluções desktop e mobile  
+
+💡 **Dica:** abra o DevTools (F12) e simule telas de `375x667` (iPhone) e `1366x768` (desktop).
+
+---
+
+## 🌐 Deploy
+Recomenda-se o deploy em **Vercel** ou **Netlify**:
+1. Crie uma conta e conecte seu GitHub  
+2. Defina variáveis de ambiente (`REACT_APP_SUPABASE_URL`, `REACT_APP_SUPABASE_ANON_KEY`)  
+3. Clique em **Deploy** e aguarde o build  
+4. Sua aplicação estará online em minutos
+
+---
+
+## 👥 Autores
+
+| Nome Completo                                    | Matrícula   | Função                   |
+|-------------------------------------------------|------------|-------------------------|
+| Júlio César Freitas Bueno de Moraes             | 2025200240 | Desenvolvedor Front-End  |
+| Aylla Christinne Feitosa Rodrigues              | 2025200220 | Desenvolvedora Front-End |
+| Fernanda Cordeiro dos Santos Ferreira          | 2025200226 | Desenvolvedora Front-End |
+| Lucas Lacerda da Silva                           | 2025200246 | Desenvolvedor Front-End  |
+| Bruno Ataídes Ferreira                           | 2025200221 | Desenvolvedor Front-End  |
+| Paulo Henrique Santos Lima                       | 2025200256 | Desenvolvedor Front-End  |
+
+---
+
+## 🧾 Licença
+Projeto desenvolvido para fins educacionais como requisito parcial da disciplina **Desenvolvimento Front-End — Prof. MSc. Reinaldo de Souza Júnior**.  
+Uso livre para fins acadêmicos e de aprendizado.
+
+---
+
+## ✅ Checklist de Entrega
+- CRUD de notas funcionando  
+- Login e registro de usuário via Supabase  
+- Filtro por prioridade  
+- Confirmação de exclusão (window.confirm)  
+- Interface responsiva  
+- README completo  
+
+
+💬 Feito com **React**, **Supabase** e muita dedicação.
