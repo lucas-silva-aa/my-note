@@ -64,10 +64,6 @@ export default function NoteEditor() {
           <img src={Icone} alt="logo" />
           My_Note
         </h1>
-        <div className="dashboard-actions">
-          <span className="icon">⚙️</span>
-          <div className="avatar">J</div>
-        </div>
       </header>
 
       {/* Editor de nota */}
