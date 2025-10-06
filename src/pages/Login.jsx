@@ -1,28 +1,31 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../App.css"; 
+import "../App.css";
 import Icone from '../images/icone.svg';
 import { supabase } from "../supabaseClient";
+import { useNotes } from "../context/NotesContext";
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { fetchNotes } = useNotes();
 
-async function handleLogin(e) {
-  e.preventDefault();
+  async function handleLogin(e) {
+    e.preventDefault();
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-  if (error) {
-    alert("Erro: " + error.message);
-  } else {
-    navigate("/dashboard");
+    if (error) {
+      alert("Erro: " + error.message);
+    } else {
+      await fetchNotes();
+      navigate("/dashboard");
+    }
   }
-}
 
   return (
     <div className="page">

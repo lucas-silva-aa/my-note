@@ -607,3 +607,402 @@ body {
 .delete-btn:hover {
   background: #d9363e;
 }
+
+.dashboard-actions {
+  position: relative; 
+}
+
+.user-dropdown {
+  position: absolute;
+  top: 100%;   
+  right: 0;   
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+  padding: 0.5rem 0;
+  z-index: 100;
+}
+
+.user-dropdown .dropdown-option {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.user-dropdown .dropdown-option:hover {
+  background: #f2f2f2;
+}
+
+/* ====== USERS PAGE ====== */
+.users-page {
+  background: #f8f9fc;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.users-content {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.card {
+  background: #E8EFFF;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.create-card .form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.users-list .user-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.user-item {
+  background: #eef3ff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.2s ease;
+}
+
+.user-item:hover {
+  background: #e2eaff;
+}
+
+.user-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.user-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 16px;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.user-email {
+  font-size: 14px;
+  color: #555;
+}
+
+.primary-btn, .secondary-btn, .delete-btn {
+  border: none;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.primary-btn {
+  background: #2563eb;
+  color: white;
+}
+.primary-btn:hover {
+  background: #1d4ed8;
+}
+
+.secondary-btn {
+  background: #e5e7eb;
+  color: #111827;
+}
+.secondary-btn:hover {
+  background: #d1d5db;
+}
+
+.delete-btn {
+  background: #ef4444;
+  color: white;
+}
+.delete-btn:hover {
+  background: #dc2626;
+}
+
+.small-btn {
+  font-size: 13px;
+  padding: 6px 10px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  z-index: 50;
+}
+.clean-header {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.dashboard-logo {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1e293b;
+  letter-spacing: -0.5px;
+}
+
+.back-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 40px 0 40px;
+  position: relative;
+}
+
+.back-btn {
+  background: #3b82f6; /* azul suave */
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: #2563eb; /* azul mais escuro no hover */
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.4);
+  transform: translateY(-1px);
+}
+/* ====== RESPONSIVIDADE ====== */
+
+/* Tablets (≤ 1024px) */
+@media (max-width: 1024px) {
+  .users-content {
+    padding: 30px;
+    gap: 30px;
+    max-width: 90%;
+  }
+
+  .dashboard-logo {
+    font-size: 22px;
+  }
+
+  .back-container {
+    padding: 12px 30px 0 30px;
+  }
+}
+
+/* Celulares grandes (≤ 768px) */
+@media (max-width: 768px) {
+  .users-content {
+    padding: 24px;
+    gap: 24px;
+  }
+
+  .dashboard-logo {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .back-container {
+    justify-content: center; /* centraliza o botão em telas médias */
+    padding: 10px 0;
+  }
+
+  .back-btn {
+    font-size: 14px;
+    padding: 8px 14px;
+    border-radius: 8px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .user-item {
+    padding: 12px 14px;
+  }
+
+  .user-actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+}
+
+/* Celulares pequenos (≤ 480px) */
+@media (max-width: 480px) {
+  .users-content {
+    padding: 16px;
+    gap: 20px;
+  }
+
+  .dashboard-logo {
+    font-size: 18px;
+  }
+
+  .back-container {
+    padding: 8px 0;
+  }
+
+  .back-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .form-grid {
+    gap: 10px;
+  }
+
+  .input {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  .primary-btn,
+  .secondary-btn,
+  .delete-btn {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .user-display {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .user-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+
+/* ====== RESPONSIVIDADE DASHBOARD ====== */
+
+/* Tablets (≤ 1024px) */
+@media (max-width: 1024px) {
+  .dashboard-content {
+    padding: 30px;
+    gap: 30px;
+    justify-content: center; /* centraliza cards no tablet */
+  }
+
+  .note-card {
+    width: 260px;
+    height: auto;
+  }
+}
+
+/* Celulares grandes (≤ 768px) */
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: row; /* mantém o avatar e o filtro à direita */
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+  }
+
+  .dashboard-logo {
+    font-size: 20px;
+  }
+
+  .filter-container {
+    display: flex;
+    justify-content: flex-end; /* mantém o filtro à direita */
+    align-items: center;
+    margin: 0;
+  }
+
+  .avatar-container {
+    display: flex;
+    justify-content: flex-end; /* mantém o avatar à direita */
+  }
+
+  .dashboard-content {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    gap: 20px;
+  }
+
+  .note-card,
+  .new-note {
+    width: 100%;
+    max-width: 350px;
+  }
+
+  .note-title {
+    font-size: 15px;
+  }
+
+  .note-desc {
+    font-size: 13px;
+  }
+}
+
+/* Celulares pequenos (≤ 480px) */
+@media (max-width: 480px) {
+  .dashboard-header {
+    padding: 12px 16px;
+  }
+
+  .dashboard-content {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .note-card,
+  .new-note {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .primary-btn {
+    width: 100%;
+  }
+
+  .filter-dropdown {
+    right: 0; /* garante que o dropdown abre pro lado certo */
+    left: auto;
+    transform: none;
+  }
+}

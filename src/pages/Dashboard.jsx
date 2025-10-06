@@ -9,8 +9,9 @@ import { supabase } from "../supabaseClient";
 export default function Dashboard() {
   const navigate = useNavigate();
   const { notes, deleteNote } = useNotes();
-  const [selectedPriority, setSelectedPriority] = useState(null); // default Todos
+  const [selectedPriority, setSelectedPriority] = useState(null);
   const [showFilter, setShowFilter] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const [userInitial, setUserInitial] = useState("");
 
   useEffect(() => {
@@ -38,14 +39,12 @@ export default function Dashboard() {
 
   const handleSelectPriority = (value) => {
     setSelectedPriority(selectedPriority === value ? null : value);
-    setShowFilter(false); // fecha dropdown
+    setShowFilter(false);
   };
 
-  const handleDelete = (noteId) => {
-    const confirmDelete = window.confirm("Deseja realmente deletar esta nota?");
-    if (confirmDelete) {
-      deleteNote(noteId);
-    }
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
   };
 
   return (
@@ -57,7 +56,33 @@ export default function Dashboard() {
           My_Note
         </h1>
         <div className="dashboard-actions">
-<div className="avatar">{userInitial}</div>
+          <div
+            className="avatar"
+            onClick={() => setShowUserMenu(!showUserMenu)}
+            style={{ cursor: "pointer" }}
+          >
+            {userInitial}
+          </div>
+
+          {showUserMenu && (
+            <div className="filter-dropdown">
+              <div
+                className="filter-option"
+                onClick={() => {
+                  setShowUserMenu(false);
+                  navigate("/users"); 
+                }}
+              >
+                Listar Usuários
+              </div>
+              <div
+                className="filter-option"
+                onClick={handleLogout}
+              >
+                Sair
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -102,42 +127,41 @@ export default function Dashboard() {
         </div>
 
         {/* Notas filtradas */}
-{filteredNotes.map((note) => {
-  let priorityColor = "gray";
-  if (note.priority === "high") priorityColor = "red";
-  else if (note.priority === "medium") priorityColor = "orange";
-  else if (note.priority === "low") priorityColor = "green";
+        {filteredNotes.map((note) => {
+          let priorityColor = "gray";
+          if (note.priority === "high") priorityColor = "red";
+          else if (note.priority === "medium") priorityColor = "orange";
+          else if (note.priority === "low") priorityColor = "green";
 
-  return (
-    <div
-      key={note.id}
-      className="note-card"
-      onClick={() => navigate(`/note/${note.id}`)}
-      style={{ cursor: "pointer", position: "relative" }}
-    >
-      <h2 className="note-title">{note.title || "Título Teste"}</h2>
-      <p className="note-desc">{note.content || "Descrição Teste"}</p>
-      <p className="note-status">
-        <span
-          className="priority-dot-dashboard"
-          style={{ backgroundColor: priorityColor, marginRight: "0.5rem" }}
-        ></span>
-        {note.status || "Feito"}
-      </p>
-      <button
-        className="delete-btn"
-        onClick={(e) => {
-          e.stopPropagation(); // evita abrir a edição
-          const confirmDelete = window.confirm("Deseja realmente deletar esta nota?");
-          if (confirmDelete) deleteNote(note.id);
-        }}
-      >
-        Deletar
-      </button>
-    </div>
-  );
-})}
-
+          return (
+            <div
+              key={note.id}
+              className="note-card"
+              onClick={() => navigate(`/note/${note.id}`)}
+              style={{ cursor: "pointer", position: "relative" }}
+            >
+              <h2 className="note-title">{note.title || "Título Teste"}</h2>
+              <p className="note-desc">{note.content || "Descrição Teste"}</p>
+              <p className="note-status">
+                <span
+                  className="priority-dot-dashboard"
+                  style={{ backgroundColor: priorityColor, marginRight: "0.5rem" }}
+                ></span>
+                {note.status || "Feito"}
+              </p>
+              <button
+                className="delete-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const confirmDelete = window.confirm("Deseja realmente deletar esta nota?");
+                  if (confirmDelete) deleteNote(note.id);
+                }}
+              >
+                Deletar
+              </button>
+            </div>
+          );
+        })}
       </main>
     </div>
   );

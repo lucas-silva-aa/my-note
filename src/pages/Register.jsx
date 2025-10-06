@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../App.css";
- import { supabase } from "../supabaseClient";
+import { supabase } from "../supabaseClient";
+import { useNotes } from "../context/NotesContext";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -9,27 +10,30 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const { fetchNotes } = useNotes();
 
-async function handleRegister(e) {
-  e.preventDefault();
+  async function handleRegister(e) {
+    e.preventDefault();
 
-  if (password !== confirmPassword) {
-    alert("As senhas não conferem!");
-    return;
+    if (password !== confirmPassword) {
+      alert("As senhas não conferem!");
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name } }
+    });
+
+    if (error) {
+      alert("Erro: " + error.message);
+    } else {
+      await fetchNotes();
+
+      navigate("/dashboard");
+    }
   }
-
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: { data: { name } }
-  });
-
-  if (error) {
-    alert("Erro: " + error.message);
-  } else {
-    navigate("/dashboard");
-  }
-}
 
   return (
     <div className="page">

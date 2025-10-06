@@ -7,16 +7,44 @@ export function NotesProvider({ children }) {
   const [notes, setNotes] = useState([]);
 
   async function fetchNotes() {
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      console.error("Usuário não autenticado:", userError);
+      return;
+    }
+
+    console.log(user.id)
     const { data, error } = await supabase
       .from("notes")
       .select("*")
+      .eq("user_id", user.id)
       .order("created_at", { ascending: false });
-    if (!error) setNotes(data);
+
+    if (error) {
+      console.error("Erro ao buscar notas:", error);
+    } else {
+      setNotes(data);
+    }
   }
 
+
   async function addNote(note) {
-    const { data, error } = await supabase.from("notes").insert([note]).select();
-    if (!error && data) setNotes([data[0], ...notes]);
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      console.error("Usuário não autenticado");
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("notes")
+      .insert([{ ...note, user_id: user.id }])
+      .select();
+
+    if (!error && data) {
+      setNotes([data[0], ...notes]);
+    } else {
+      console.error("Erro ao salvar nota:", error);
+    }
   }
 
   async function updateNote(id, updatedNote) {
@@ -36,26 +64,26 @@ export function NotesProvider({ children }) {
   }
 
   async function getNote(id) {
-  const { data, error } = await supabase
-    .from("notes")
-    .select("*")
-    .eq("id", id)
-    .single(); 
+    const { data, error } = await supabase
+      .from("notes")
+      .select("*")
+      .eq("id", id)
+      .single();
 
-  if (error) {
-    console.error("Erro ao buscar nota:", error.message);
-    return null;
+    if (error) {
+      console.error("Erro ao buscar nota:", error.message);
+      return null;
+    }
+
+    return data;
   }
-
-  return data; 
-}
 
   useEffect(() => {
     fetchNotes();
   }, []);
 
   return (
-    <NotesContext.Provider value={{ notes, addNote, updateNote, deleteNote, getNote  }}>
+    <NotesContext.Provider value={{ notes, addNote, updateNote, deleteNote, getNote, fetchNotes }}>
       {children}
     </NotesContext.Provider>
   );

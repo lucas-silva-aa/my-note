@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NoteEditor from "./pages/NoteEditor";
 import { NotesProvider } from "./context/NotesContext"; // 👈 importa o contexto
+import UsersScreen from "./pages/UsersScreen";
 
 export default function App() {
   return (
@@ -12,9 +13,10 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/users" element={<UsersScreen />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/note/:id" element={<NoteEditor />} />
-          <Route path="/note" element={<NoteEditor />} /> {/* 👈 rota pra criar nova */}
+          <Route path="/note" element={<NoteEditor />} />
         </Routes>
       </Router>
     </NotesProvider>
