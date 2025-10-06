@@ -5,12 +5,17 @@ import "../App.css";
 
 export default function UsersScreen() {
     const navigate = useNavigate();
+
+    // Estados da tela
     const [users, setUsers] = useState([]);
     const [newUser, setNewUser] = useState({ email: "", password: "", name: "" });
     const [loading, setLoading] = useState(false);
+
+    // Estados de edição
     const [editingUserId, setEditingUserId] = useState(null);
     const [editValues, setEditValues] = useState({ name: "", email: "", password: "" });
 
+    // Busca todos os usuários do Supabase Admin
     async function fetchUsers() {
         setLoading(true);
         try {
@@ -24,11 +29,13 @@ export default function UsersScreen() {
         }
     }
 
+    // Cria um novo usuário
     async function handleCreateUser() {
         if (!newUser.email || !newUser.password || !newUser.name) {
             alert("Preencha todos os campos!");
             return;
         }
+
         setLoading(true);
         try {
             const { error } = await supabaseAdmin.auth.admin.createUser({
@@ -37,6 +44,7 @@ export default function UsersScreen() {
                 user_metadata: { name: newUser.name },
             });
             if (error) throw error;
+
             alert("Usuário criado com sucesso!");
             setNewUser({ email: "", password: "", name: "" });
             fetchUsers();
@@ -47,12 +55,15 @@ export default function UsersScreen() {
         }
     }
 
+    // Deleta um usuário
     async function handleDeleteUser(id) {
         if (!window.confirm("Deseja realmente excluir este usuário?")) return;
+
         setLoading(true);
         try {
             const { error } = await supabaseAdmin.auth.admin.deleteUser(id);
             if (error) throw error;
+
             alert("Usuário deletado!");
             fetchUsers();
         } catch (err) {
@@ -62,6 +73,7 @@ export default function UsersScreen() {
         }
     }
 
+    // Inicia edição de um usuário
     function startEdit(user) {
         setEditingUserId(user.id);
         setEditValues({
@@ -71,11 +83,13 @@ export default function UsersScreen() {
         });
     }
 
+    // Salva alterações de um usuário
     async function handleSaveEdit(id) {
         if (!editValues.name || !editValues.email) {
             alert("Nome e email são obrigatórios!");
             return;
         }
+
         setLoading(true);
         try {
             const updates = { user_metadata: { name: editValues.name } };
@@ -96,6 +110,7 @@ export default function UsersScreen() {
         }
     }
 
+    // Busca usuários ao montar componente
     useEffect(() => {
         fetchUsers();
     }, []);
@@ -104,16 +119,20 @@ export default function UsersScreen() {
         <div className="users-page">
             {loading && <div className="overlay">Carregando...</div>}
 
+            {/* Header */}
             <header className="dashboard-header clean-header">
                 <h1 className="dashboard-logo">👥 Gerenciar Usuários</h1>
             </header>
+
+            {/* Botão de voltar */}
             <div className="back-container">
                 <button className="back-btn" onClick={() => navigate("/dashboard")}>
                     ← Voltar
                 </button>
             </div>
+
             <main className="users-content">
-                {/* Criar Usuário */}
+                {/* Card de criação de usuário */}
                 <div className="card create-card">
                     <h2>Criar Usuário</h2>
                     <div className="form-grid">
@@ -138,13 +157,17 @@ export default function UsersScreen() {
                             value={newUser.password}
                             onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
                         />
-                        <button className="primary-btn" onClick={handleCreateUser} disabled={loading}>
+                        <button
+                            className="primary-btn"
+                            onClick={handleCreateUser}
+                            disabled={loading}
+                        >
                             Criar Usuário
                         </button>
                     </div>
                 </div>
 
-                {/* Lista de Usuários */}
+                {/* Lista de usuários */}
                 <div className="card users-list">
                     <h2>Lista de Usuários</h2>
                     {users.length === 0 ? (
@@ -154,6 +177,7 @@ export default function UsersScreen() {
                             {users.map((u) => (
                                 <div key={u.id} className="user-item">
                                     {editingUserId === u.id ? (
+                                        // Modo edição
                                         <div className="user-edit">
                                             <input
                                                 className="input"
@@ -177,25 +201,38 @@ export default function UsersScreen() {
                                                 placeholder="Nova senha (opcional)"
                                             />
                                             <div className="user-actions">
-                                                <button className="primary-btn small-btn" onClick={() => handleSaveEdit(u.id)}>
+                                                <button
+                                                    className="primary-btn small-btn"
+                                                    onClick={() => handleSaveEdit(u.id)}
+                                                >
                                                     💾 Salvar
                                                 </button>
-                                                <button className="secondary-btn small-btn" onClick={() => setEditingUserId(null)}>
+                                                <button
+                                                    className="secondary-btn small-btn"
+                                                    onClick={() => setEditingUserId(null)}
+                                                >
                                                     ✖ Cancelar
                                                 </button>
                                             </div>
                                         </div>
                                     ) : (
+                                        // Modo exibição
                                         <div className="user-display">
                                             <div>
                                                 <p className="user-name">{u.user_metadata?.name || "Sem nome"}</p>
                                                 <p className="user-email">{u.email}</p>
                                             </div>
                                             <div className="user-actions">
-                                                <button className="primary-btn small-btn" onClick={() => startEdit(u)}>
+                                                <button
+                                                    className="primary-btn small-btn"
+                                                    onClick={() => startEdit(u)}
+                                                >
                                                     ✏️ Editar
                                                 </button>
-                                                <button className="delete-btn small-btn" onClick={() => handleDeleteUser(u.id)}>
+                                                <button
+                                                    className="delete-btn small-btn"
+                                                    onClick={() => handleDeleteUser(u.id)}
+                                                >
                                                     🗑 Excluir
                                                 </button>
                                             </div>

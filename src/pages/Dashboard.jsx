@@ -9,11 +9,26 @@ import { supabase } from "../supabaseClient";
 export default function Dashboard() {
   const navigate = useNavigate();
   const { notes, deleteNote } = useNotes();
+
+  // Estado para prioridade selecionada no filtro
   const [selectedPriority, setSelectedPriority] = useState(null);
-  const [showFilter, setShowFilter] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  // Estado de visibilidade do filtro e do menu do usuário
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [isUserMenuVisible, setIsUserMenuVisible] = useState(false);
+
+  // Inicial do usuário para exibir no avatar
   const [userInitial, setUserInitial] = useState("");
 
+  // Array de prioridades para filtro
+  const priorities = [
+    { label: "Todos", value: null, color: "gray" },
+    { label: "Alta", value: "high", color: "red" },
+    { label: "Média", value: "medium", color: "orange" },
+    { label: "Baixa", value: "low", color: "green" },
+  ];
+
+  // Busca inicial do usuário logado no Supabase
   useEffect(() => {
     async function fetchUser() {
       const { data: { user } } = await supabase.auth.getUser();
@@ -25,23 +40,33 @@ export default function Dashboard() {
     fetchUser();
   }, []);
 
-  const priorities = [
-    { label: "Todos", value: null, color: "gray" },
-    { label: "Alta", value: "high", color: "red" },
-    { label: "Média", value: "medium", color: "orange" },
-    { label: "Baixa", value: "low", color: "green" },
-  ];
+  // Função utilitária para obter cor da prioridade
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case "high":
+        return "red";
+      case "medium":
+        return "orange";
+      case "low":
+        return "green";
+      default:
+        return "gray";
+    }
+  };
 
+  // Notas filtradas de acordo com a prioridade selecionada
   const filteredNotes =
-    selectedPriority && selectedPriority !== null
+    selectedPriority !== null
       ? notes.filter((note) => note.priority === selectedPriority)
       : notes;
 
+  // Alterna prioridade selecionada no filtro
   const handleSelectPriority = (value) => {
     setSelectedPriority(selectedPriority === value ? null : value);
-    setShowFilter(false);
+    setIsFilterVisible(false);
   };
 
+  // Logout do usuário
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/");
@@ -55,30 +80,30 @@ export default function Dashboard() {
           <img src={Icone} alt="logo" />
           My_Note
         </h1>
+
         <div className="dashboard-actions">
+          {/* Avatar do usuário */}
           <div
             className="avatar"
-            onClick={() => setShowUserMenu(!showUserMenu)}
+            onClick={() => setIsUserMenuVisible(!isUserMenuVisible)}
             style={{ cursor: "pointer" }}
           >
             {userInitial}
           </div>
 
-          {showUserMenu && (
+          {/* Menu do usuário */}
+          {isUserMenuVisible && (
             <div className="filter-dropdown">
               <div
                 className="filter-option"
                 onClick={() => {
-                  setShowUserMenu(false);
-                  navigate("/users"); 
+                  setIsUserMenuVisible(false);
+                  navigate("/users");
                 }}
               >
                 Listar Usuários
               </div>
-              <div
-                className="filter-option"
-                onClick={handleLogout}
-              >
+              <div className="filter-option" onClick={handleLogout}>
                 Sair
               </div>
             </div>
@@ -86,16 +111,16 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* Filtro */}
+      {/* Filtro de prioridades */}
       <div className="filter-container">
         <button
           className="filter-btn"
-          onClick={() => setShowFilter(!showFilter)}
+          onClick={() => setIsFilterVisible(!isFilterVisible)}
         >
           <FilterIcon />
         </button>
 
-        {showFilter && (
+        {isFilterVisible && (
           <div className="filter-dropdown">
             {priorities.map((p) => (
               <div
@@ -116,9 +141,9 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* Conteúdo */}
+      {/* Conteúdo principal */}
       <main className="dashboard-content">
-        {/* Criar nova nota */}
+        {/* Card para criar nova nota */}
         <div className="note-card new-note" onClick={() => navigate("/note")}>
           <div className="new-note-icon">
             <img src={Icone} alt="logo" />
@@ -126,42 +151,42 @@ export default function Dashboard() {
           <button className="primary-btn">Criar Nova Nota</button>
         </div>
 
-        {/* Notas filtradas */}
-        {filteredNotes.map((note) => {
-          let priorityColor = "gray";
-          if (note.priority === "high") priorityColor = "red";
-          else if (note.priority === "medium") priorityColor = "orange";
-          else if (note.priority === "low") priorityColor = "green";
-
-          return (
-            <div
-              key={note.id}
-              className="note-card"
-              onClick={() => navigate(`/note/${note.id}`)}
-              style={{ cursor: "pointer", position: "relative" }}
-            >
-              <h2 className="note-title">{note.title || "Título Teste"}</h2>
-              <p className="note-desc">{note.content || "Descrição Teste"}</p>
-              <p className="note-status">
-                <span
-                  className="priority-dot-dashboard"
-                  style={{ backgroundColor: priorityColor, marginRight: "0.5rem" }}
-                ></span>
-                {note.status || "Feito"}
-              </p>
-              <button
-                className="delete-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const confirmDelete = window.confirm("Deseja realmente deletar esta nota?");
-                  if (confirmDelete) deleteNote(note.id);
+        {/* Renderização das notas filtradas */}
+        {filteredNotes.map((note) => (
+          <div
+            key={note.id}
+            className="note-card"
+            onClick={() => navigate(`/note/${note.id}`)}
+            style={{ cursor: "pointer", position: "relative" }}
+          >
+            <h2 className="note-title">{note.title || "Título Teste"}</h2>
+            <p className="note-desc">{note.content || "Descrição Teste"}</p>
+            <p className="note-status">
+              <span
+                className="priority-dot-dashboard"
+                style={{
+                  backgroundColor: getPriorityColor(note.priority),
+                  marginRight: "0.5rem",
                 }}
-              >
-                Deletar
-              </button>
-            </div>
-          );
-        })}
+              ></span>
+              {note.status || "Feito"}
+            </p>
+
+            {/* Botão de deletar nota */}
+            <button
+              className="delete-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                const confirmDelete = window.confirm(
+                  "Deseja realmente deletar esta nota?"
+                );
+                if (confirmDelete) deleteNote(note.id);
+              }}
+            >
+              Deletar
+            </button>
+          </div>
+        ))}
       </main>
     </div>
   );

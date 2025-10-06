@@ -11,25 +11,36 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const { fetchNotes } = useNotes();
 
+  // Função para autenticar usuário via Supabase
   async function handleLogin(e) {
     e.preventDefault();
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      alert("Erro: " + error.message);
-    } else {
+      if (error) {
+        // Feedback em caso de erro
+        alert("Erro: " + error.message);
+        return;
+      }
+
+      // Busca notas do usuário após login
       await fetchNotes();
+
+      // Redireciona para o dashboard
       navigate("/dashboard");
+    } catch (err) {
+      console.error("Erro no login:", err);
+      alert("Ocorreu um erro inesperado.");
     }
   }
 
   return (
     <div className="page">
-      {/* topo com logo / título */}
+      {/* Header / Logo */}
       <header className="brand">
         <div className="logo">
           <img src={Icone} alt="logo" />
@@ -38,7 +49,7 @@ export default function Login() {
         <p className="brand-sub">Suas notas em um só lugar</p>
       </header>
 
-      {/* card central */}
+      {/* Card central com formulário */}
       <main className="login-wrapper">
         <div className="card">
           <h2 className="card-title">Login</h2>
@@ -46,8 +57,9 @@ export default function Login() {
 
           <form className="form" onSubmit={handleLogin}>
             <div className="form-group">
-              <label className="label">Email</label>
+              <label className="label" htmlFor="email">Email</label>
               <input
+                id="email"
                 className="input"
                 type="email"
                 placeholder="Digite seu email"
@@ -58,8 +70,9 @@ export default function Login() {
             </div>
 
             <div className="form-group">
-              <label className="label">Senha</label>
+              <label className="label" htmlFor="password">Senha</label>
               <input
+                id="password"
                 className="input"
                 type="password"
                 placeholder="Digite sua senha"
@@ -79,6 +92,7 @@ export default function Login() {
           </Link>
         </div>
 
+        {/* Termos de uso */}
         <p className="terms">
           Ao efetuar login, você concorda com nossos Termos, Política de Privacidade
           e Política de Cookies.

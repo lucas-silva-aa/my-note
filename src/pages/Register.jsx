@@ -6,45 +6,58 @@ import { useNotes } from "../context/NotesContext";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { fetchNotes } = useNotes();
+
+  // Estados do formulário
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { fetchNotes } = useNotes();
 
+  // Função para registrar usuário via Supabase
   async function handleRegister(e) {
     e.preventDefault();
 
+    // Validação de senhas
     if (password !== confirmPassword) {
       alert("As senhas não conferem!");
       return;
     }
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { name } }
-    });
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { name } }
+      });
 
-    if (error) {
-      alert("Erro: " + error.message);
-    } else {
+      if (error) {
+        alert("Erro: " + error.message);
+        return;
+      }
+
+      // Busca notas do usuário recém-criado
       await fetchNotes();
 
+      // Redireciona para o dashboard
       navigate("/dashboard");
+
+    } catch (err) {
+      console.error("Erro no cadastro:", err);
+      alert("Ocorreu um erro inesperado.");
     }
   }
 
   return (
     <div className="page">
-      {/* topo com logo / título */}
+      {/* Header com logo e título */}
       <header className="brand">
         <div className="logo">📝</div>
         <h1 className="brand-title">My_Note</h1>
         <p className="brand-sub">Suas notas em um só lugar</p>
       </header>
 
-      {/* card central */}
+      {/* Card central com formulário */}
       <main className="login-wrapper">
         <div className="card">
           <h2 className="card-title">Cadastro</h2>
@@ -52,8 +65,9 @@ export default function Register() {
 
           <form className="form" onSubmit={handleRegister}>
             <div className="form-group">
-              <label className="label">Nome</label>
+              <label htmlFor="name" className="label">Nome</label>
               <input
+                id="name"
                 className="input"
                 type="text"
                 placeholder="Nome completo"
@@ -64,8 +78,9 @@ export default function Register() {
             </div>
 
             <div className="form-group">
-              <label className="label">Email</label>
+              <label htmlFor="email" className="label">Email</label>
               <input
+                id="email"
                 className="input"
                 type="email"
                 placeholder="Digite seu email"
@@ -76,8 +91,9 @@ export default function Register() {
             </div>
 
             <div className="form-group">
-              <label className="label">Senha</label>
+              <label htmlFor="password" className="label">Senha</label>
               <input
+                id="password"
                 className="input"
                 type="password"
                 placeholder="Digite sua senha"
@@ -88,8 +104,9 @@ export default function Register() {
             </div>
 
             <div className="form-group">
-              <label className="label">Confirmar Senha</label>
+              <label htmlFor="confirmPassword" className="label">Confirmar Senha</label>
               <input
+                id="confirmPassword"
                 className="input"
                 type="password"
                 placeholder="Digite sua senha"
@@ -109,6 +126,7 @@ export default function Register() {
           </Link>
         </div>
 
+        {/* Termos de uso */}
         <p className="terms">
           Ao efetuar seu cadastro, você concorda com nossos Termos, Política de
           Privacidade e Política de Cookies.
