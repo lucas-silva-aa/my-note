@@ -648,7 +648,7 @@ body {
   }
 
   .back-container {
-    justify-content: center;
+    justify-content: flex-end;
     padding: 10px 0;
   }
 
@@ -704,7 +704,7 @@ body {
   }
 
   .back-btn {
-    width: 100%;
+    width: 30%;
     justify-content: center;
     font-size: 14px;
   }
@@ -875,5 +875,94 @@ body {
   .primary-btn.small-btn,
   .secondary-btn.small-btn {
     width: 100%;
+  }
+}
+
+/* ====== AJUSTES RESPONSIVOS USERS ====== */
+@media (max-width: 480px) {
+  .users-content {
+    padding: 12px;
+    gap: 20px;
+  }
+
+  .user-item {
+    width: 100%;
+    min-width: unset;  /* remove largura mínima */
+    max-width: 100%;   /* garante uso total do espaço */
+    padding: 12px;
+  }
+
+  .user-display {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .user-actions {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .user-name {
+    font-size: 15px;
+  }
+
+  .user-email {
+    font-size: 13px;
+    word-break: break-all; /* quebra email longo */
+  }
+
+  .create-card .form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .primary-btn,
+  .secondary-btn,
+  .delete-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .back-container {
+    padding: 10px;
+  }
+
+  .back-btn {
+    width: 30%;
+    justify-content: center;
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+/* ====== Ajuste extra para telas até 390px (iPhone 14) ====== */
+@media (max-width: 390px) {
+  .users-content {
+    padding: 10px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .input {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .user-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .small-btn {
+    width: 100%;
+    text-align: center;
   }
 }
